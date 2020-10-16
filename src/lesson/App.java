@@ -2,7 +2,7 @@ package lesson;
 
 import java.util.Scanner;
 
-public class App {
+public class App { // 변수선언 (공유공간, 공통메모..), 실행x 
 
 	// 공공재 article 클래스 생성
 	Article article1 = new Article();
@@ -12,13 +12,17 @@ public class App {
 	Article getArticle(int id) {
 		if (id == 1) {
 			return article1;
-		} else if (id == 2) {
+			
+		} 
+		else if (id == 2) {
 			return article2;
+			
 		}
 		return null;
+		
 	}
 
-	public void run() {
+	public void run() {  // 실제 작동구간
 
 		// 명령어 스캐너 기능 만들기
 		Scanner scanner = new Scanner(System.in);
@@ -51,23 +55,19 @@ public class App {
 				title = scanner.nextLine();
 				System.out.printf("내용 : ");
 				body = scanner.nextLine();
+				
+				Article article = getArticle(id);
 
-				if (id == 1) {
-					article1.id = id;
-					article1.title = title;
-					article1.body = body;
-				}
-
-				if (id == 2) {
-					article2.id = id;
-					article2.title = title;
-					article2.body = body;
-				}
-
+				article.id = id;
+				article.title = title;
+				article.body = body;
+				
 				System.out.printf("%d번 글이 생성되었습니다\n", id);
 
 				lastArticleId = id;
 			}
+			
+			
 
 			// 게시물리스트
 			if (command.equals("article list")) {
@@ -79,16 +79,10 @@ public class App {
 				}
 
 				System.out.println("번호/제목");
-
-				for (int i = 1; i <= lastArticleId; i++) {
-					Article article = null;
-
-					if (i == 1) {
-						article = article1;
-					} else if (i == 2) {
-						article = article2;
-					}
-
+				
+				for ( int i = 1; i <= lastArticleId; i++) {
+					Article article = getArticle(i);
+			
 					System.out.printf("%d / %s\n", article.id, article.title);
 
 				}
