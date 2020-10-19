@@ -4,25 +4,19 @@ import java.util.Scanner;
 
 public class App { // 변수선언 (공유공간, 공통메모..), 실행x 
 
-	// 공공재 article 클래스 생성
-	Article article1 = new Article();
-	Article article2 = new Article();
+	// 공공재 article 클래스 생성 _ 저장 10개 까지  
+	Article[] articles = new Article[10];
 
 	// 자주쓰는 함수 빼놓기
 	Article getArticle(int id) {
-		if (id == 1) {
-			return article1;
-			
-		} 
-		else if (id == 2) {
-			return article2;
-			
-		}
-		return null;
-		
+		return articles[id - 1];
 	}
 
 	public void run() {  // 실제 작동구간
+		
+		for (int i = 0; i < articles.length; i++ ) {
+			articles[i] = new Article();
+		}
 
 		// 명령어 스캐너 기능 만들기
 		Scanner scanner = new Scanner(System.in);
@@ -31,7 +25,7 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		int lastArticleId = 0;
 
 		// 게시물 수 제한하기
-		int maxArticlesCount = 2;
+		int maxArticlesCount = articles.length;
 
 		// 루프 시작
 		while (true) {
@@ -42,7 +36,7 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 			if (command.equals("article add")) {
 				System.out.println("==게시물등록==");
 
-				if (lastArticleId > maxArticlesCount) {
+				if (lastArticleId >= maxArticlesCount) {
 					System.out.println("더 이상 생성할 수 없습니다");
 					continue;
 				}
