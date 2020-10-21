@@ -2,27 +2,49 @@ package lesson;
 
 import java.util.Scanner;
 
-public class App { // 변수선언 (공유공간, 공통메모..), 실행x 
+public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
-	// 공공재 article 클래스 생성 _ 저장 10개 까지  
-	Article[] articles = new Article[10];
+	// 공공재 article 클래스 생성
 
-	// 자주쓰는 함수 빼놓기
+	int articleSize = 0;
+	Article[] articles = new Article[3];
+
+	// 게시물 번호 초기값
+	int lastArticleId = 0;
+
 	Article getArticle(int id) {
+
 		return articles[id - 1];
 	}
 
-	public void run() {  // 실제 작동구간
-		
-		for (int i = 0; i < articles.length; i++ ) {
+	// 인덱스 찾기
+	public int getIndexOf(int id) {
+		for (int i = 0; i < articles.length; i++) {
+			if (id == articles[i].id) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	// 인덱스 지우기
+	public void remove(int index) {
+		for (int i = index + 1; i < articleSize; i++) {
+			articles[i - 1] = articles[i];
+		}
+
+		articleSize--;
+	}
+
+	public void run() { // 실제 작동구간
+
+		for (int i = 0; i < articles.length; i++) {
 			articles[i] = new Article();
 		}
 
 		// 명령어 스캐너 기능 만들기
 		Scanner scanner = new Scanner(System.in);
-
-		// 게시물번호 초기값
-		int lastArticleId = 0;
 
 		// 게시물 수 제한하기
 		int maxArticlesCount = articles.length;
@@ -32,11 +54,25 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 			System.out.printf("명령어 ) ");
 			String command = scanner.nextLine();
 
+			// 게시물 삭제
+			if (command.startsWith("article delete ")) {
+
+				int inputedId = Integer.parseInt(command.split(" ")[2]);
+
+				System.out.printf("%d번 게시글이 삭제되었습니다\n", inputedId);
+
+				int index = getIndexOf(inputedId);
+
+				if (index != -1) {
+					remove(index);
+				}
+			}
+
 			// 게시물등록
 			if (command.equals("article add")) {
 				System.out.println("==게시물등록==");
 
-				if (lastArticleId >= maxArticlesCount) {
+				if (articleSize >= maxArticlesCount) {
 					System.out.println("더 이상 생성할 수 없습니다");
 					continue;
 				}
@@ -45,23 +81,23 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				String title;
 				String body;
 
+				lastArticleId = id;
+
 				System.out.printf("제목 : ");
 				title = scanner.nextLine();
 				System.out.printf("내용 : ");
 				body = scanner.nextLine();
-				
+
 				Article article = getArticle(id);
 
 				article.id = id;
 				article.title = title;
 				article.body = body;
-				
+
 				System.out.printf("%d번 글이 생성되었습니다\n", id);
 
-				lastArticleId = id;
+				articleSize++;
 			}
-			
-			
 
 			// 게시물리스트
 			if (command.equals("article list")) {
@@ -73,10 +109,10 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				}
 
 				System.out.println("번호/제목");
-				
-				for ( int i = 1; i <= lastArticleId; i++) {
+
+				for (int i = 1; i <= articleSize; i++) {
 					Article article = getArticle(i);
-			
+
 					System.out.printf("%d / %s\n", article.id, article.title);
 
 				}
@@ -93,13 +129,12 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 					System.out.printf("%d번 글은 존재하지 않습니다\n", inputedId);
 					continue;
 				}
-				
+
 				Article article = getArticle(inputedId);
-				
+
 				System.out.printf("번호 : %d\n", article.id);
 				System.out.printf("제목 : %s\n", article.title);
 				System.out.printf("내용 : %s\n", article.body);
-				
 
 			}
 
