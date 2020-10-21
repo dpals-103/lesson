@@ -40,7 +40,10 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 	}
 
 	// 인덱스 지우기 함수 
-	public void remove(int index) {
+	public void remove(int id) {
+		
+		int index = getIndexOf(id);
+		
 		for (int i = index + 1; i < articleSize; i++) {
 			articles[i - 1] = articles[i];
 		}
@@ -79,11 +82,9 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 					System.out.printf("%d번 글이 존재하지 않습니다/n",inputedId);
 				}
 				
-				int index = getIndexOf(inputedId);
-
-				if (index != -1) {
-					remove(index);
-				}
+				remove(inputedId);
+				
+				
 			}
 		
 	
