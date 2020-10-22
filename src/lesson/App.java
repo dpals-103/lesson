@@ -30,9 +30,17 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 	// 게시물 정보 저장하는 함수
 	private int add(String title, String body) {
 
-		// 게시물 저장수 무한대로 생성하기
+		// 게시물 무한대로 저장하기 ( 새 저장소 업체와 계약하기 ) 
+		// 배열은 증가할 수 없다! -> 증가한게 아니라 공간이 큰 새로운 저장소로 옮겨가는 것 
+		
 		if (articleSize() >= articles.length) {
-			Article[] newArticles = new Article[articles.length * 2];
+			Article[] newArticles = new Article[articles.length * 2]; 
+			// 이 변수는 이 구문에서 태어났기 때문에 밖으로 나갈 수 없다. 
+			
+			for  ( int i = 0; i < articles.length; i++ ) {
+				newArticles[i] = articles[i];
+			}
+			
 			articles = newArticles;
 		}
 
@@ -89,8 +97,6 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		// 명령어 스캐너 기능 만들기
 		Scanner scanner = new Scanner(System.in);
 
-		// 게시물 수 제한하기
-		int maxArticlesCount = articles.length;
 
 		// 루프 시작
 		while (true) {
