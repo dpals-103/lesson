@@ -26,6 +26,41 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		return articles[index];
 	}
 
+	
+	// 게시물 정보 저장하는 함수
+	private int add(String title, String body) {
+
+		// 게시물 저장수 무한대로 생성하기
+		if (articleSize() >= articles.length) {
+			Article[] newArticles = new Article[articles.length * 2];
+			articles = newArticles;
+		}
+
+		System.out.printf("현재 배열길이 : %d\n", articles.length);
+
+		Article article = new Article();
+		// 무작위로 큰 공간을 만드는게 아니고, 추가되는만큼(필요한만큼)만 공간을 만든다
+
+		article.id = lastArticleId + 1;
+		article.title = title;
+		article.body = body;
+
+		articles[articleSize] = article;
+		// articles[0] = article;
+
+		articleSize++;
+
+		lastArticleId = article.id;
+
+		return article.id;
+
+		// if (articleSize >= articles.length) {
+		// System.out.println("더 이상 생성할 수 없습니다");
+		// continue;
+		// }
+
+	}
+
 	// 인덱스 찾기 함수
 	private int getIndexOf(int id) {
 		for (int i = 0; i < articles.length; i++) {
@@ -83,46 +118,24 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 			if (command.equals("article add")) {
 				System.out.println("==게시물등록==");
 
-				if (articleSize >= maxArticlesCount) {
-					System.out.println("더 이상 생성할 수 없습니다");
-					continue;
-				}
-
-				int id = lastArticleId + 1;
 				String title;
 				String body;
-				
-				
+
 				Date regDate = new Date();
-				SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-
-
-
-				lastArticleId = id;
+				SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 				System.out.printf("제목 : ");
 				title = scanner.nextLine();
 				System.out.printf("내용 : ");
 				body = scanner.nextLine();
 				System.out.println(Date.format(regDate));
-				
 
-				Article article = new Article();
-				// 무작위로 큰 공간을 만드는게 아니고, 추가되는만큼(필요한만큼)만 공간을 만든다
-
-				article.id = id;
-				article.title = title;
-				article.body = body;
+				int id = add(title, body);
 
 				System.out.printf("%d번 글이 생성되었습니다\n", id);
 
-				articles[articleSize] = article;
-				// articles[0] = article;
-
-				articleSize++;
 			}
 
-			
 			// 게시물리스트
 			if (command.equals("article list")) {
 				System.out.println("==게시물리스트==");
@@ -134,14 +147,13 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
 				System.out.println("번호/제목");
 
-				for (int i = 0; i < articleSize(); i++) {
+				// 최신 게시글 순으로 리스팅
+				for (int i = articleSize() - 1; i >= 0; i--) {
 
 					Article article = articles[i];
 
 					System.out.printf("%d / %s\n", article.id, article.title);
 				}
-				
-				
 
 			}
 
@@ -185,14 +197,13 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
 				int inputedId = Integer.parseInt(command.split(" ")[2]);
 
-				Article article = getArticle(inputedId); 
-				
+				Article article = getArticle(inputedId);
+
 				System.out.printf("새 제목 : ");
 				article.title = scanner.nextLine();
 				System.out.printf("새 내용 : ");
 				article.body = scanner.nextLine();
-				
-				
+
 				System.out.printf("%d번 게시글이 수정되었습니다\n", inputedId);
 
 			}
