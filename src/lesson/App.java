@@ -6,18 +6,28 @@ import java.util.Scanner;
 
 public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
-	// 공공재생성
-
-	Article[] articles = new Article[4];
-
-	int articleSize = 0;
-	int lastArticleId = 0;
-
-	int articleSize() {
+	private Article[] articles;
+	private int lastArticleId;
+	private int articleSize; 
+	
+	
+	// 생성자 메서드 (자동으로 초기화) 
+	public App() {
+		articles = new Article[32];
+		lastArticleId = 0;
+		articleSize = 0; 
+		
+		for (int i = 0; i < 32; i++) {
+			add("제목" + (i+1), "내용" + (i+1));
+	}
+	}
+	
+	
+	private int articleSize() {
 		return articleSize;
 	}
 
-	Article getArticle(int id) {
+	private Article getArticle(int id) {
 		int index = getIndexOf(id);
 
 		if (index == -1) {
@@ -33,45 +43,48 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		// 게시물 무한대로 저장하기 ( 새 저장소 업체와 계약하기 ) 
 		// 배열은 증가할 수 없다! -> 증가한게 아니라 공간이 큰 새로운 저장소로 옮겨가는 것 
 		
-		if (articleSize() >= articles.length) {
-			Article[] newArticles = new Article[articles.length * 2]; 
-			// 이 변수는 이 구문에서 태어났기 때문에 밖으로 나갈 수 없다. 
+		if (isArticlesFull()) {
+			System.out.printf("==배열 사이즈 증가 (%d => %d) ==\n", articles.length, articles.length*2);
 			
+			Article[] newArticles = new Article[articles.length * 2]; 
+			
+
 			for  ( int i = 0; i < articles.length; i++ ) {
 				newArticles[i] = articles[i];
 			}
 			
 			articles = newArticles;
 		}
-
-		System.out.printf("현재 배열길이 : %d\n", articles.length);
-
+		
 		Article article = new Article();
 		// 무작위로 큰 공간을 만드는게 아니고, 추가되는만큼(필요한만큼)만 공간을 만든다
-
+		
 		article.id = lastArticleId + 1;
 		article.title = title;
 		article.body = body;
 
 		articles[articleSize] = article;
 		// articles[0] = article;
-
+		
 		articleSize++;
-
 		lastArticleId = article.id;
 
 		return article.id;
 
-		// if (articleSize >= articles.length) {
-		// System.out.println("더 이상 생성할 수 없습니다");
-		// continue;
-		// }
+			
+		}
 
+
+
+	private boolean isArticlesFull() {
+		return articleSize == articles.length;
 	}
+
+
 
 	// 인덱스 찾기 함수
 	private int getIndexOf(int id) {
-		for (int i = 0; i < articles.length; i++) {
+		for (int i = 0; i < articleSize; i++) {
 			if (id == articles[i].id) {
 				return i;
 			}
@@ -80,10 +93,15 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		return -1;
 	}
 
+	
 	// 인덱스 지우기 함수
 	private void remove(int id) {
 
 		int index = getIndexOf(id);
+		
+		if( index == -1 ) {
+			return;
+		}
 
 		for (int i = index + 1; i < articleSize; i++) {
 			articles[i - 1] = articles[i];
@@ -92,6 +110,14 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 		articleSize--;
 	}
 
+	// 게시물 수정하기 함수 
+	private void modify (int inputedId, String title, String body) {
+		Article article = getArticle(inputedId);
+		article.title = title;
+		article.body = body;
+	}
+	
+	
 	public void run() { // 실제 작동구간
 
 		// 명령어 스캐너 기능 만들기
@@ -103,6 +129,8 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 			System.out.printf("명령어 ) ");
 			String command = scanner.nextLine();
 
+			
+			
 			// 게시물 삭제
 			if (command.startsWith("article delete ")) {
 
@@ -119,6 +147,8 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				remove(inputedId);
 
 			}
+			
+		
 
 			// 게시물등록
 			if (command.equals("article add")) {
@@ -137,10 +167,15 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				System.out.println(Date.format(regDate));
 
 				int id = add(title, body);
+				
 
 				System.out.printf("%d번 글이 생성되었습니다\n", id);
 
 			}
+			
+			
+			
+			
 
 			// 게시물리스트
 			if (command.equals("article list")) {
@@ -204,12 +239,20 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				int inputedId = Integer.parseInt(command.split(" ")[2]);
 
 				Article article = getArticle(inputedId);
+				
+				if (article == null) {
+					System.out.printf("%d번 게시물을 존재하지 않습니다.",inputedId);
+					continue;
+				}
+				
+				System.out.printf("번호 : %d\n", article.id);
+				System.out.printf("제목 : ");
+				String title = scanner.nextLine();
+				System.out.printf("내용 : ");
+				String body = scanner.nextLine();
 
-				System.out.printf("새 제목 : ");
-				article.title = scanner.nextLine();
-				System.out.printf("새 내용 : ");
-				article.body = scanner.nextLine();
-
+				modify(inputedId,title, body); 
+				
 				System.out.printf("%d번 게시글이 수정되었습니다\n", inputedId);
 
 			}
@@ -225,4 +268,8 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
 	}
 
-}
+	
+		
+	}
+
+
