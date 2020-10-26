@@ -158,9 +158,16 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
 			// 게시물리스트
 			if (command.startsWith("article list ")) {
+				
+				int page = Integer.parseInt(command.split(" ")[2]);
+				
+				if ( page <= 1) {
+					page = 1;
+				}
+				
 				System.out.println("==게시물리스트==");
 
-				int page = Integer.parseInt(command.split(" ")[2]);
+				
 
 				if (articleSize() == 0) {
 					System.out.println("==게시물이 존재하지 않습니다==");
@@ -168,22 +175,21 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 				}
 
 				System.out.println("번호/제목");
-			
-				
+
 				int itemsInAPage = 10; // 1페이지당 게시물 갯수
-				int startPos = articleSize() - 1; // 시작 인덱스 초기값 
-				startPos -= (page - 1)*itemsInAPage;   // 각 페이지 별  시작점 
-				int endPos = startPos - (itemsInAPage - 1); // 각 페이지 별 끝점 
-				
-				if ( endPos < 0 ) {
-					endPos = 0; 
+				int startPos = articleSize() - 1; // 시작 인덱스 초기값
+				startPos -= (page - 1) * itemsInAPage; // 각 페이지 별 시작점
+				int endPos = startPos - (itemsInAPage - 1); // 각 페이지 별 끝점
+
+				if (endPos < 0) {
+					endPos = 0;
 				}
-				
-				if (startPos < 0 ) { // 데이터가 존재하지 않을 때 
-					System.out.printf("%d 페이지는 존재하지 않습니다.\n",page);
+
+				if (startPos < 0) { // 데이터가 존재하지 않을 때
+					System.out.printf("%d 페이지는 존재하지 않습니다.\n", page);
 					continue;
 				}
-				
+
 				// 최신 게시글 순으로 리스팅
 				for (int i = startPos; i >= endPos; i--) {
 
@@ -194,18 +200,74 @@ public class App { // 변수선언 (공유공간, 공통메모..), 실행x
 
 			}
 
-			// 게시물 검색 : 해당 문자열이 포함되는지를 확인하면 됨!
-			if (command.startsWith("article serch ")) {
+
+			if (command.startsWith("article search ")) {
+				
+				String[] commandBits = command.split(" "); 
+				
+				String searchKeyword = commandBits[2];
+				
+				int page = 1; 
+				
+				if (commandBits.length >= 4) {
+					page = Integer.parseInt(command.split(" ")[3]);
+				}
+				
+				if ( page <= 1) {
+					page = 1;
+				}
+				
 				System.out.println("==게시물검색==");
-
-				String articleText = command.split(" ")[2];
-
-				for (int i = 0; i < articleSize; i++) {
-					Article article = articles[i];
-					if (article.body.contains(articleText) || article.title.contains(articleText))
-						System.out.printf("%d / %s\n", article.id, article.title);
+				
+				
+				int searchResultLen = 0; 
+				
+				//검색된 결과의 수를 먼저 구하기 
+				for (Article article : articles) {
+					if ( article.title.contains(searchKeyword)) {
+						searchResultLen++; 
+					}
 				}
 
+				Article[] searchResult = new Article[searchResultLen]; 
+				
+				int searchResultIndex = 0; 
+				
+				for (Article article : articles) {
+					if (article.title.contains(searchKeyword)) {
+						searchResult[searchResultIndex]=article;
+						searchResultIndex++;
+					}
+				}
+				
+				if (searchResult.length == 0) {
+					System.out.println("검색결과가 존재하지 않습니다");
+					continue; 
+				}
+				
+				System.out.println("번호/제목");
+
+				int itemsInAPage = 10; // 1페이지당 게시물 갯수
+				int startPos = searchResultLen - 1; // 시작 인덱스 초기값
+				startPos -= (page - 1) * itemsInAPage; // 각 페이지 별 시작점
+				int endPos = startPos - (itemsInAPage - 1); // 각 페이지 별 끝점
+
+				if (endPos < 0) {
+					endPos = 0;
+				}
+
+				if (startPos < 0) { // 데이터가 존재하지 않을 때
+					System.out.printf("%d 페이지는 존재하지 않습니다.\n", page);
+					continue;
+				}
+
+				// 최신 게시글 순으로 리스팅
+				for (int i = startPos; i >= endPos; i--) {
+
+					Article article = articles[i];
+
+					System.out.printf("%d / %s\n", article.id, article.title);
+				}
 			}
 
 			// 게시물상세보기
