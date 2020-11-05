@@ -1,38 +1,36 @@
 package test.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import test.container.Container;
+
 import test.dao.MemberDao;
+import test.dto.Article;
 import test.dto.Member;
 
 public class MemberService {
-
-	private MemberDao memberDao;
+	
+	private MemberDao memberDao; 
 
 	public MemberService() {
-		memberDao = new MemberDao();
+		memberDao = Container.memberDao; 
 	}
 
 	public boolean isAvailableLoginId(String loginId) {
-		Member member = memberDao.getMemberByLoginId(loginId);
-
-		if (member != null) {
-			return false;
-		}
-		return true;
+		return memberDao.isAvailableLoginId(loginId);
 	}
 
 	public int join(String loginId, String loginPw, String name) {
 		return memberDao.join(loginId, loginPw, name);
 	}
 
-	public Member getMemberByLoginId(String loginId) {
-		return memberDao.getMemberByLoginId(loginId);
-
+	public Member isVaildLoginId(String loginId) {
+		return memberDao.isVaildLoginId(loginId);
 	}
 
-	public Member getMemberById(int id) {
-		return memberDao.getMemberById(id);
+	public Member getMemberById(int memberId) {
+		return memberDao.getMemberById(memberId);
 	}
+
+	
 }

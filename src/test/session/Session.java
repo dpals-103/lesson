@@ -1,15 +1,23 @@
 package test.session;
 
 public class Session {
-
-	public int loginedMemberId;
-
-	public boolean isLogined() {
-		return loginedMemberId != 0; 
+	
+	public int isLogindeMemberId;
+	
+	public Session() {
+		isLogindeMemberId = 0; 
 	}
 
-	public boolean isLogout() {
-		return !isLogined();
+	public boolean isLogined() {
+		return isLogindeMemberId != 0; 
+	}
+
+	public void login(int id) {
+		isLogindeMemberId = id; 
+	}
+
+	public void logout() {
+		isLogindeMemberId = 0;
 	}
 
 }

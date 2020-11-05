@@ -8,29 +8,34 @@ import test.controller.MemberController;
 
 public class App {
 
-	MemberController memberControlloer = new MemberController();
-	ArticleController articleContrller = new ArticleController();
-
+	private MemberController memberController;
+	private ArticleController articleController;
+	
+	public App() {
+		memberController = Container.memberController; 
+		articleController = Container.articleController;
+	}
+	
 	public void run() {
-		Scanner sc = new Scanner(System.in);
-
-		while (true) {
-
+		Scanner sc = Container.scanner;
+		
+		while(true) {
 			System.out.printf("명령어) ");
-			String command = sc.nextLine();
-
-			if (command.startsWith("member ")) {
-				Container.memberController.run(sc, command);
+			String cmd = sc.nextLine(); 
+			
+			if(cmd.startsWith("member ")) {
+				memberController.doCommand(cmd); 
 			}
-			if (command.startsWith("article ")) {
-				Container.articleController.run(sc, command);
+			if(cmd.startsWith("article ")) {
+				articleController.doCommand(cmd); 
 			}
-			// 프로그램 종료
-			if (command.equals("exit")) {
-				System.out.println("프로그램을 종료합니다");
+			//프로그램종료
+			if(cmd.equals("exit")) {
+				System.out.println("프로그램종료");
 				break;
 			}
 		}
+		
 		sc.close();
 	}
 
