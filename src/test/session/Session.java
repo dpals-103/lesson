@@ -3,6 +3,7 @@ package test.session;
 public class Session {
 	
 	public int isLogindeMemberId;
+	public int selectedBoardId;
 	
 	public Session() {
 		isLogindeMemberId = 0; 
@@ -17,7 +18,11 @@ public class Session {
 	}
 
 	public void logout() {
-		isLogindeMemberId = 0;
+		isLogindeMemberId = 0; 
+	}
+
+	public void selectedBoardId(int boardId) {
+		selectedBoardId = boardId; 
 	}
 
 }

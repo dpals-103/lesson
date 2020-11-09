@@ -6,6 +6,7 @@ public class Article {
 	public String body;
 	public int memberId;
 	public int id;
+	public int boardId;
 	
 
 }

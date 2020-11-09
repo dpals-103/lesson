@@ -14,13 +14,10 @@ public class MemberDao {
 		members = new ArrayList<>();
 		lastMemberId = 0;
 		
-		makeTestData(); 
+		
 	}
 
-	private void makeTestData() {
-		join("aaa","aaa","aaa");
-		join("bbb","bbb","bbb");
-	}
+
 
 	public boolean isAvailableLoginId(String loginId) {
 	
